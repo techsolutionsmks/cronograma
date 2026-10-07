@@ -128,7 +128,7 @@ function cardHTML(g) {
   const vals = money("Valor Município Aprovado", g.aprov) + 
                money("Valor Repassado", g.repas) + 
                money("Valor Total", g.total) + 
-               info("Resolução", g.resolucao);
+               info("Resolução nº", g.resolucao);
                
   const lotes = g.lotes.map(l => {
     const st = stageStates(l.stages);
