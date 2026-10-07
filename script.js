@@ -147,7 +147,7 @@ function cardHTML(g) {
   }).join("");
 
   return `<article class="card">
-    <div class="where">${esc(g.mun)} · Card ${esc(g.num)}</div>
+    <div class="where">${esc(g.mun)}</div>
     <h2 class="title ${g.emp ? "" : "empty"}">${g.emp ? esc(g.emp) : "Empreendimento a definir"}</h2>
     ${vals ? `<div class="vals">${vals}</div>` : ""}
     ${lotes || `<p class="nolote">Nenhuma ação cadastrada ainda.</p>`}
