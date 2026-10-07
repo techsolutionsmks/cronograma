@@ -4,13 +4,11 @@ const SHEET_TAB = "dados";   // opcional: nome da aba (vazio = primeira aba)
 const REFRESH_MIN = 5;       // recarrega os dados a cada X minutos
 
 const STAGES = [
-  ["atualizacao anteprojeto", "Atualização Anteprojeto"],
-  ["documentacao licitacao", "Documentação licitação"],
-  ["publicacao de edital", "Publicação de edital"],
-  ["homologacao certame", "Homologação certame"],
-  ["ordem de inicio", "Ordem de início"],
-  ["conclusao projeto", "Conclusão do projeto"],
-  ["conclusao da obra", "Conclusão das obras"]
+  ["publicacao do edital", "Publicação do Edital"],
+  ["homologacao", "Homologação"],
+  ["ordem de inicio", "Ordem de Início"],
+  ["conclusao projeto", "Conclusão do Projeto"],
+  ["conclusao da obra", "Conclusão da Obra"]
 ];
 const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
@@ -80,9 +78,16 @@ function buildData(csv) {
   const head = rows[0].map(norm);
   const idx = name => head.indexOf(name);
   const col = {
-    card: idx("card"), mun: idx("municipio"), aprov: idx("valor municipio aprovado"),
-    repas: idx("valor repassado"), emp: idx("empreendimento"), total: idx("valor total"),
-    acao: idx("acao"), status: idx("status"), vacao: idx("valor acao")
+    card: idx("card"), 
+    mun: idx("municipio"), 
+    aprov: idx("valor municipio aprovado"),
+    repas: idx("valor repassado"), 
+    resolucao: idx("resolucao") !== -1 ? idx("resolucao") : (idx("_resolucao") !== -1 ? idx("_resolucao") : idx("e_resolucao")), 
+    emp: idx("empreendimento"), 
+    total: idx("valor total"),
+    acao: idx("acao"), 
+    status: idx("status"), 
+    vacao: idx("valor acao")
   };
   const stageIdx = STAGES.map(([k]) => idx(k));
   const get = (r, i) => i >= 0 ? (r[i] || "").trim() : "";
@@ -92,9 +97,9 @@ function buildData(csv) {
     const mun = get(r, col.mun), num = get(r, col.card);
     if (!mun && !num) return;
     const key = mun + "|" + num;
-    if (!groups.has(key)) groups.set(key, { mun, num, emp: "", aprov: "", repas: "", total: "", lotes: [] });
+    if (!groups.has(key)) groups.set(key, { mun, num, emp: "", aprov: "", repas: "", resolucao: "", total: "", lotes: [] });
     const g = groups.get(key);
-    ["emp", "aprov", "repas", "total"].forEach(k => { if (!g[k]) g[k] = get(r, col[k]); });
+    ["emp", "aprov", "repas", "resolucao", "total"].forEach(k => { if (!g[k]) g[k] = get(r, col[k]); });
     const stages = stageIdx.map(i => get(r, i));
     const lote = { acao: get(r, col.acao), status: get(r, col.status), valor: get(r, col.vacao), stages };
     if (lote.acao || lote.status || lote.valor || stages.some(Boolean)) g.lotes.push(lote);
@@ -117,16 +122,21 @@ function stageStates(dates) {
 }
 
 const money = (label, v) => v ? `<div><b>${label}:</b> ${esc(v)}</div>` : "";
+const info = (label, v) => v ? `<div><b>${label}:</b> ${esc(v)}</div>` : "";
 
 function cardHTML(g) {
-  const vals = money("Valor aprovado", g.aprov) + money("Valor repassado", g.repas) + money("Valor total", g.total);
+  const vals = money("Valor Município Aprovado", g.aprov) + 
+               money("Valor Repassado", g.repas) + 
+               money("Valor Total", g.total) + 
+               info("Resolução", g.resolucao);
+               
   const lotes = g.lotes.map(l => {
     const st = stageStates(l.stages);
     const badgeClass = getStatusClass(l.status);
     const badge = l.status ? `<span class="badge ${badgeClass}">${esc(l.status)}</span>` : "";
     return `<section class="lote">
       <div class="lote-head">
-        <span class="lote-name">${l.acao ? "Ação " + esc(l.acao) : "Lote"}</span>${badge}
+        <span class="lote-name">${l.acao ? "Ação " + esc(l.acao) : "Ação"}</span>${badge}
         ${l.valor ? `<span class="lote-val"><b>Valor da ação:</b> ${esc(l.valor)}</span>` : ""}
       </div>
       <div class="stages">${st.map((s, i) => `
@@ -135,11 +145,12 @@ function cardHTML(g) {
         </div>`).join("")}</div>
     </section>`;
   }).join("");
+
   return `<article class="card">
-    <div class="where">${esc(g.mun)} · ${esc(g.num)}</div>
+    <div class="where">${esc(g.mun)} · Card ${esc(g.num)}</div>
     <h2 class="title ${g.emp ? "" : "empty"}">${g.emp ? esc(g.emp) : "Empreendimento a definir"}</h2>
     ${vals ? `<div class="vals">${vals}</div>` : ""}
-    ${lotes || `<p class="nolote">Nenhuma etapa cadastrada ainda.</p>`}
+    ${lotes || `<p class="nolote">Nenhuma ação cadastrada ainda.</p>`}
   </article>`;
 }
 
@@ -229,7 +240,6 @@ function statusChartHTML(list) {
   }).join("");
 }
 
-/* Gráfico de Rosca (Donut SVG) para preencher a parte inferior */
 function donutChartHTML(list) {
   const statusMap = new Map();
   let totalCount = 0;
