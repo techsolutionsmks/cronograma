@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secretaria da Reconstrução Gaúcha · Painel de Obras</title>
+<link rel="icon" href="logo estado.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="logo-container">
+      <img class="logo" src="logo2" alt="Governo do Estado do Rio Grande do Sul">
+    </div>
+    <div>
+      <h1>Secretaria da Reconstrução Gaúcha</h1>
+      <p class="tagline">Acompanhamento de obras por município</p>
+    </div>
+    <p class="updated" id="updated"></p>
+  </header>
+
+  <main class="main">
+    <section class="data" aria-label="Obras">
+      <form class="toolbar" id="toolbar" onsubmit="return false">
+        <label class="field grow">
+          <span>Buscar</span>
+          <input type="search" id="fQuery" placeholder="Empreendimento ou município">
+        </label>
+        <label class="field">
+          <span>Município</span>
+          <select id="fMun"><option value="">Todos</option></select>
+        </label>
+        <label class="field">
+          <span>Status</span>
+          <select id="fStatus"><option value="">Todos</option></select>
+        </label>
+        <button type="button" class="clear" id="fClear">Limpar</button>
+      </form>
+
+      <div class="legend">
+        <span><i class="lg-done"></i>Etapa realizada</span>
+        <span><i class="lg-next"></i>Próxima etapa</span>
+        <span><i class="lg-none"></i>Sem data</span>
+      </div>
+
+      <div id="msg" role="status"></div>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <aside class="chart-panel" aria-label="Painel de gráficos e estatísticas">
+      <div class="stats" id="stats"></div>
+      <div class="charts-container">
+        <div class="chart-section">
+          <div class="chart-head">
+            <h2 id="chartTitle">Onde as ações se concentram</h2>
+            <div class="seg" role="group" aria-label="Métrica do gráfico">
+              <button type="button" data-mode="acoes" aria-pressed="true">Ações</button>
+              <button type="button" data-mode="valor" aria-pressed="false">Valor</button>
+            </div>
+          </div>
+          <div class="chart" id="chart"></div>
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-head">
+            <h2>Status atual das ações</h2>
+          </div>
+          <div class="chart" id="statusChart"></div>
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-head">
+            <h2>Proporção geral por status</h2>
+          </div>
+          <div class="chart" id="donutChart"></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>

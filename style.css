@@ -1,0 +1,182 @@
+:root{
+  --bg:#EEF2F7; 
+  --card: rgba(255, 255, 255, 0.75); 
+  --card-solid: #fff;
+  --ink:#0F2A43; 
+  --muted:#5F7388; 
+  --line: rgba(213, 221, 231, 0.6);
+  --line-solid: #D5DDE7;
+  --blue:#1D5FD1; 
+  --blue-soft:rgba(232, 240, 253, 0.8); 
+  --orange:#D97706;
+  --orange-soft: rgba(254, 243, 199, 0.9);
+  --green:#1F8A5B; 
+  --green-soft:rgba(227, 244, 235, 0.9); 
+  --red:#DC2626;
+  --red-soft: rgba(254, 226, 226, 0.9);
+  --head-h:72px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background: radial-gradient(circle at top left, #f4f7fc, #e2eaf4);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  line-height:1.45;
+}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* ===== Estrutura ===== */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.top{
+  display:flex;align-items:center;gap:14px;padding:12px 24px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom:1px solid var(--line);
+  min-height:var(--head-h);
+  box-shadow: 0 4px 20px rgba(15, 42, 67, 0.03);
+  z-index: 10;
+}
+.logo-container{width:46px;height:46px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--blue-soft);border-radius:10px;border:1px solid var(--line)}
+.logo{max-width:100%;max-height:100%;object-fit:contain}
+h1{font-size:1.3rem;margin:0;font-weight:700;line-height:1.2}
+.tagline{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.updated{margin:0 0 0 auto;color:var(--muted);font-size:.82rem;text-align:right}
+
+.main{flex:1;display:flex;flex-direction:column;gap:16px;padding:16px 24px 32px}
+.data{display:flex;flex-direction:column;min-width:0}
+
+/* ===== Painel Lateral / Gráficos com Glassmorphism ===== */
+.chart-panel{
+  order:-1;
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px 20px;
+  box-shadow: 0 8px 32px 0 rgba(15, 42, 67, 0.06);
+}
+
+@media (min-width:1000px){
+  html,body{overflow:hidden}
+  .app{height:100vh;height:100dvh;min-height:0}
+  .main{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:20px;min-height:0;padding:16px 24px 20px}
+  .data{min-height:0}
+  .cards{flex:1;min-height:0;overflow-y:auto;padding-right:6px;scrollbar-gutter:stable}
+  .chart-panel{order:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .charts-container{flex:1;min-height:0;overflow-y:auto;padding-right:4px}
+}
+
+/* ===== Filtros e Barra de Ferramentas com Glass ===== */
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:10px;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 20px rgba(15, 42, 67, 0.03);
+}
+.field{display:flex;flex-direction:column;gap:3px;font-size:.8rem;color:var(--muted);font-weight:500}
+.field.grow{flex:1;min-width:180px}
+.field input,.field select{height:38px;padding:0 10px;border:1.5px solid var(--line-solid);border-radius:8px;background:rgba(255,255,255,0.9);color:var(--ink);font-size:.92rem;min-width:150px}
+.field.grow input{width:100%}
+.clear{height:38px;padding:0 14px;border:1.5px solid var(--line-solid);border-radius:8px;background:rgba(255,255,255,0.9);cursor:pointer}
+.clear:hover{border-color:var(--ink);background:#fff}
+
+.legend{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:.8rem;color:var(--muted);margin-bottom:10px;padding: 0 4px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.lg-done{background:var(--green-soft);border:1px solid var(--green)}
+.lg-next{background:var(--orange)}
+.lg-none{border:1.5px dashed var(--muted)}
+.msg{padding:12px 14px;border-radius:10px;background:rgba(255, 244, 229, 0.9);border:1px solid #F5C98F;margin-bottom:12px;font-size:.9rem}
+.empty-state{padding:36px 12px;text-align:center;color:var(--muted)}
+
+/* ===== Cards Glassmorphism ===== */
+.card{
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px 20px;
+  margin-bottom:14px;
+  box-shadow: 0 4px 24px rgba(15, 42, 67, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover{
+  box-shadow: 0 6px 28px rgba(15, 42, 67, 0.08);
+}
+.where{color:var(--blue);font-weight:600;font-size:.92rem}
+.title{font-size:1.3rem;font-weight:700;margin:2px 0 8px;line-height:1.25}
+.title.empty{color:var(--muted);font-weight:500;font-size:1.05rem}
+.vals{display:flex;flex-wrap:wrap;gap:4px 24px;margin:0 0 4px;font-size:.93rem}
+.lote{border-top:1px dashed var(--line-solid);margin-top:14px;padding-top:12px}
+.lote-head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin-bottom:10px}
+.lote-name{font-weight:700}
+
+/* Estilos de Status (Badge) */
+.badge{font-size:.78rem;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+.badge.concluido{background:var(--green-soft);color:var(--green);border:1px solid rgba(31,138,91,0.2)}
+.badge.em-andamento{background:var(--orange-soft);color:var(--orange);border:1px solid rgba(217,119,6,0.2)}
+.badge.nao-executado{background:var(--red-soft);color:var(--red);border:1px solid rgba(220,38,38,0.2)}
+
+.lote-val{margin-left:auto;font-size:.92rem}
+.stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px}
+.stage{border:1.5px solid var(--line-solid);border-radius:8px;overflow:hidden;background:rgba(255,255,255,0.7);text-align:center}
+.stage .n{padding:6px 5px;font-weight:600;font-size:.76rem;line-height:1.2;min-height:42px;display:flex;align-items:center;justify-content:center}
+.stage .d{padding:6px 4px;font-size:.88rem;border-top:1px solid var(--line-solid);color:var(--muted)}
+.stage.done .n{background:var(--green-soft);color:var(--green)}
+.stage.done .d{color:var(--ink)}
+.stage.next{border-color:var(--blue)}
+.stage.next .n{background:var(--orange);color:#fff}
+.stage.next .d{color:var(--ink);font-weight:600}
+.stage.none{border-style:dashed}
+.stage.none .n{color:var(--muted);font-weight:500}
+.nolote{color:var(--muted);margin:12px 0 0;border-top:1px dashed var(--line-solid);padding-top:12px;font-size:.92rem}
+
+/* ===== Painéis de Estatísticas e Gráficos ===== */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat{
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line);
+  border-radius:10px;
+  padding:10px 12px;
+}
+.stat b{display:block;font-size:1.5rem;line-height:1.1}
+.stat span{font-size:.78rem;color:var(--muted)}
+
+.chart-section{margin-bottom: 20px;}
+.chart-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.chart-head h2{font-size:.95rem;margin:0;line-height:1.25}
+.seg{display:flex;border:1px solid var(--line-solid);border-radius:8px;overflow:hidden;flex:none;background:rgba(255,255,255,0.8)}
+.seg button{border:0;background:transparent;padding:4px 10px;font-size:.8rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+.bar-row{margin-bottom:10px}
+.bar-top{display:flex;justify-content:space-between;gap:10px;font-size:.84rem;margin-bottom:3px}
+.bar-top span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-top span:last-child{font-weight:600;flex:none}
+.track{height:10px;background:rgba(213, 221, 231, 0.4);border-radius:5px;overflow:hidden}
+.fill{height:100%;background:var(--blue);border-radius:5px;transition:width .35s ease}
+.bar-row:first-child .fill{background:var(--blue)}
+
+/* Estilo para o Gráfico de Rosca (Donut) */
+.donut-container{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0}
+.donut-svg{width:110px;height:110px;transform:rotate(-90deg)}
+.donut-legend{display:flex;flex-direction:column;gap:4px;font-size:.78rem}
+.donut-legend-item{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.donut-dot{width:9px;height:9px;border-radius:50%;flex:none}
+
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+@media (max-width:560px){
+  .top{padding:10px 14px}
+  .main{padding:12px 14px 28px}
+  h1{font-size:1.1rem}
+  .updated{display:none}
+  .lote-val{margin-left:0}
+}
