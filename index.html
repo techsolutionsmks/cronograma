@@ -21,7 +21,12 @@
       <h1>Secretaria da Reconstrução Gaúcha</h1>
       <p class="tagline">Acompanhamento de obras por município</p>
     </div>
-    <p class="updated" id="updated"></p>
+    
+    <!-- Botão de Gerenciamento / Edição integrando com Apps Script -->
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+  <button type="button" id="btnAdmin" class="clear" style="background: var(--blue); color: #fff; border: none; font-weight: 600; cursor: pointer; padding: 6px 14px; border-radius: 8px;">⚙️ Gerenciar Sistema</button>
+  <p class="updated" id="updated" style="margin: 0;"></p>
+</div>
   </header>
 
   <main class="main">
@@ -84,6 +89,75 @@
   </main>
 
 </div>
+
+<!-- Modal de Gerenciamento / Senha / Ações (Adicionar, Editar, Excluir) -->
+<div id="adminModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+  <div style="background:#fff; padding:24px; border-radius:12px; width:90%; max-width:500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height:90vh; overflow-y:auto;">
+    <h2 style="margin-top:0; font-size:1.2rem; color:var(--ink);">Painel Administrativo · Cronograma</h2>
+    
+    <!-- Passo 1: Validação de Senha -->
+    <div id="authBox">
+      <p style="font-size:0.9rem; color:var(--muted);">Digite a senha de acesso para gerenciar o sistema:</p>
+      <label class="field" style="margin-bottom:12px;">
+        <span>Senha Mestra</span>
+        <input type="password" id="adminPassword" placeholder="Digite a senha..." style="width:100%;">
+      </label>
+      <button type="button" id="btnLogin" class="clear" style="background:var(--blue); color:#fff; width:100%; border:none; font-weight:600;">Entrar</button>
+    </div>
+
+    <!-- Passo 2: Oções de Gerenciamento (Aparece após a senha correta) -->
+    <div id="actionsBox" style="display:none;">
+      <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <button type="button" class="tab-action clear" data-target="formAdd" style="flex:1; font-weight:600; background:var(--blue-soft); border-color:var(--blue);">Adicionar</button>
+        <button type="button" class="tab-action clear" data-target="formEdit" style="flex:1; font-weight:600;">Editar</button>
+        <button type="button" class="tab-action clear" data-target="formDel" style="flex:1; font-weight:600;">Excluir</button>
+      </div>
+
+      <!-- Formulário Adicionar -->
+      <form id="formAdd" class="admin-form">
+        <p style="font-weight:600; font-size:0.9rem; margin-bottom:8px;">Adicionar Novo Registro (Linha na Planilha)</p>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
+          <input type="text" id="addCard" placeholder="Card (Ex: 01)" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="addMun" placeholder="Município" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="addEmp" placeholder="Empreendimento" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="addAcao" placeholder="Nome da Ação (Ex: Ação 1)" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="addStatus" placeholder="Status (Ex: Em andamento)" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <button type="button" id="btnExecAdd" class="clear" style="background:var(--green); color:#fff; border:none; font-weight:600; margin-top:6px;">Salvar Novo</button>
+        </div>
+      </form>
+
+      <!-- Formulário Editar -->
+      <form id="formEdit" class="admin-form" style="display:none;">
+        <p style="font-weight:600; font-size:0.9rem; margin-bottom:8px;">Editar Registro Existente</p>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
+          <input type="text" id="editCard" placeholder="Card correspondente" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="editMun" placeholder="Município correspondente" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="editAcaoAntiga" placeholder="Nome da Ação atual (para localizar)" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <hr style="border:0; border-top:1px solid #eee; margin:4px 0;">
+          <input type="text" id="editAcaoNova" placeholder="Novo nome da Ação" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="editStatusNovo" placeholder="Novo Status" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <button type="button" id="btnExecEdit" class="clear" style="background:var(--orange); color:#fff; border:none; font-weight:600; margin-top:6px;">Atualizar Registro</button>
+        </div>
+      </form>
+
+      <!-- Formulário Excluir -->
+      <form id="formDel" class="admin-form" style="display:none;">
+        <p style="font-weight:600; font-size:0.9rem; margin-bottom:8px; color:var(--red);">Excluir Registro</p>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
+          <input type="text" id="delCard" placeholder="Card" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="delMun" placeholder="Município" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="delAcao" placeholder="Nome da Ação exata" style="padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <button type="button" id="btnExecDel" class="clear" style="background:var(--red); color:#fff; border:none; font-weight:600; margin-top:6px;">Excluir Permanentemente</button>
+        </div>
+      </form>
+    </div>
+
+    <div style="text-align:right; margin-top:16px;">
+      <button type="button" id="btnCloseModal" class="clear" style="background:#ddd; border:none;">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
